@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="main.dao.DataMapper" >
+
+    <select id="selectDataByCutom" resultType="main.pojo.DataVo">
+        SELECT
+          corp1.BUILD_NAME,
+          corp1.DEVELOP_COMPANY,
+          corp1.BUILD_ADDRESS,
+          corp1.DISTRICT_NAME,
+
+          t.ALIAS,
+          t.LOCATION_LNG,
+          t.LOCATION_LAT,
+          t.START_TIME,
+          t.END_TIME,
+          t.USED_TIME,
+          t.GREEN_RATE,
+          t.VOLUM_RATE,
+          t.MANAGE_FEE,
+          t.AVRAGE_PRICE,
+          t.BUILD_AREA,
+          t.PARK_SPACE,
+          t.BUILD_INFO,
+          t.RELATIVE_INFO,
+          t.FLOOR_NAME,
+          t.BUILD_LOCATION,
+          t.FOOT_AREA,
+          t.UNIT_NAME,
+          t.ROOM_NAME,
+          t.SUIT_PNG,
+          t.BUILD_PNG,
+          t.USAGE_MUL,
+          t.ROOM_STRUCT,
+          t.ROOM_AREA,
+          t.SUIT_AREA,
+          t.DISP_AREA
+        FROM
+          (SELECT
+            middle1.ALIAS,
+            middle1.LOCATION_LNG,
+            middle1.LOCATION_LAT,
+            middle1.START_TIME,
+            middle1.END_TIME,
+            middle1.USED_TIME,
+            middle1.GREEN_RATE,
+            middle1.VOLUM_RATE,
+            middle1.MANAGE_FEE,
+            middle1.AVRAGE_PRICE,
+            middle1.BUILD_AREA,
+            middle1.PARK_SPACE,
+            middle1.BUILD_INFO,
+            middle1.RELATIVE_INFO,
+
+            xzdetail.FLOOR_NAME,
+            xzdetail.BUILD_LOCATION,
+            xzdetail.FOOT_AREA,
+            xzdetail.UNIT_NAME,
+            xzdetail.ROOM_NAME,
+            xzdetail.SUIT_PNG,
+            middle1.BUILD_PNG,
+            xzdetail.USAGE_MUL,
+            xzdetail.ROOM_STRUCT,
+            xzdetail.ROOM_AREA,
+            xzdetail.SUIT_AREA,
+            xzdetail.DISP_AREA,
+            middle1.corpID,
+            middle1.BUILD_NAME
+          FROM
+            xzdetail
+            LEFT JOIN middle1
+              ON xzdetail.item_id = middle1.item_id) t
+          LEFT JOIN corp1
+            ON t.corpID = corp1.corpID
+            AND t.BUILD_NAME = corp1.BUILD_NAME
+        WHERE corp1.DISTRICT_NAME = '贾汪区'
+        LIMIT 0,10
+    </select>
+
+</mapper>
