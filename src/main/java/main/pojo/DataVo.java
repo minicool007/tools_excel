@@ -1,5 +1,8 @@
 package main.pojo;
 
+/*
+ 徐州抓取字段
+ */
 public class DataVo {
 
     private String BUILD_NAME;

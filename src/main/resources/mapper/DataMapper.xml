@@ -37,20 +37,20 @@
           t.DISP_AREA
         FROM
           (SELECT
-            middle1.ALIAS,
-            middle1.LOCATION_LNG,
-            middle1.LOCATION_LAT,
-            middle1.START_TIME,
-            middle1.END_TIME,
-            middle1.USED_TIME,
-            middle1.GREEN_RATE,
-            middle1.VOLUM_RATE,
-            middle1.MANAGE_FEE,
-            middle1.AVRAGE_PRICE,
-            middle1.BUILD_AREA,
-            middle1.PARK_SPACE,
-            middle1.BUILD_INFO,
-            middle1.RELATIVE_INFO,
+            middle.ALIAS,
+            middle.LOCATION_LNG,
+            middle.LOCATION_LAT,
+            middle.START_TIME,
+            middle.END_TIME,
+            middle.USED_TIME,
+            middle.GREEN_RATE,
+            middle.VOLUM_RATE,
+            middle.MANAGE_FEE,
+            middle.AVRAGE_PRICE,
+            middle.BUILD_AREA,
+            middle.PARK_SPACE,
+            middle.BUILD_INFO,
+            middle.RELATIVE_INFO,
 
             xzdetail.FLOOR_NAME,
             xzdetail.BUILD_LOCATION,
@@ -58,23 +58,40 @@
             xzdetail.UNIT_NAME,
             xzdetail.ROOM_NAME,
             xzdetail.SUIT_PNG,
-            middle1.BUILD_PNG,
+            middle.BUILD_PNG,
             xzdetail.USAGE_MUL,
             xzdetail.ROOM_STRUCT,
             xzdetail.ROOM_AREA,
             xzdetail.SUIT_AREA,
             xzdetail.DISP_AREA,
-            middle1.corpID,
-            middle1.BUILD_NAME
+            middle.corpID,
+            middle.BUILD_NAME
           FROM
             xzdetail
-            LEFT JOIN middle1
-              ON xzdetail.item_id = middle1.item_id) t
+            LEFT JOIN middle
+              ON xzdetail.item_id = middle.item_id) t
           LEFT JOIN corp1
             ON t.corpID = corp1.corpID
             AND t.BUILD_NAME = corp1.BUILD_NAME
-        WHERE corp1.DISTRICT_NAME = '贾汪区'
-        LIMIT 0,10
+        WHERE corp1.DISTRICT_NAME = '鼓楼区'
     </select>
-
+  <select id="selectfzDataByCutom" resultType="main.pojo.FzDataVo">
+    SELECT
+      district.CITY_NAME,
+      district.DISTRICT_NAME,
+      district.COMMUNITY_NAME,
+      itemlist.ADDRESS,
+      itemlist.BUILD_NAME,
+      itemlist.DOOR_NAME,
+      itemlist.UNIT_NAME,
+      itemlist.ROOM_NAME,
+      itemlist.JURIS,
+      itemlist.POLICE,
+      itemlist.BUILD_POINT_LAT,
+      itemlist.BUILD_POINT_LNG
+    FROM itemlist
+    LEFT JOIN district
+    ON itemlist.SYSTEM_ID = district.SYSTEM_ID
+    LIMIT 3600000,600000
+  </select>
 </mapper>

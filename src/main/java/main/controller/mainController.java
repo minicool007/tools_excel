@@ -1,6 +1,7 @@
 package main.controller;
 
 import main.dao.DataMapper;
+import main.pojo.FzDataVo;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -21,7 +22,7 @@ public class mainController {
 
     @RequestMapping(value = "/toexcel")
     public String toExcel() throws IOException {
-        String xlsFile = "f:/徐州房产数据.xlsx";     //输出文件
+        String xlsFile = "f:/徐州房产数据_.xlsx";     //输出文件
         SXSSFWorkbook wb = new SXSSFWorkbook(100);
         Sheet sheet = null;     //工作表对象
         Row nRow = null;        //行对象
@@ -120,7 +121,71 @@ public class mainController {
 
         return "success!";
     }
+    @RequestMapping(value = "/fztoexcel")
+    public String fztoexcel() throws IOException {
+        String xlsFile = "f:/福州房产数据_.xlsx";     //输出文件
+        SXSSFWorkbook wb = new SXSSFWorkbook(100);
+        Sheet sheet = null;     //工作表对象
+        Row nRow = null;        //行对象
+        Cell nCell = null;      //列对象
 
+        long  startTime = System.currentTimeMillis();
+
+
+        //从mysql中读取百万级数据
+        List<FzDataVo> items = dataMapper.selectfzDataByCutom();
+        int columns = 30;
+        int cnt = 0;
+        int pageRowNo = 0;  //页行号
+        while( cnt < items.size() ){
+            //每20万数据就分sheet
+            if(cnt % 200000 == 0){
+                sheet = wb.createSheet("第"+(cnt/200000)+"数据");
+                sheet = wb.getSheetAt(cnt/200000);
+                pageRowNo = 0;      //每当新建了工作表就将当前工作表的行号重置为0
+                fillsheet1(nRow, sheet, nCell);
+            }
+
+            nRow = sheet.createRow(++pageRowNo);    //新建行对象
+            // 填充一行数据
+            nCell = nRow.createCell(0);
+            nCell.setCellValue(items.get(cnt).getCITY_NAME());
+            nCell = nRow.createCell(1);
+            nCell.setCellValue(items.get(cnt).getDISTRICT_NAME());
+            nCell = nRow.createCell(2);
+            nCell.setCellValue(items.get(cnt).getCOMMUNITY_NAME());
+            nCell = nRow.createCell(3);
+            nCell.setCellValue(items.get(cnt).getADDRESS());
+            nCell = nRow.createCell(4);
+            nCell.setCellValue(items.get(cnt).getBUILD_NAME());
+            nCell = nRow.createCell(5);
+            nCell.setCellValue(items.get(cnt).getDOOR_NAME());
+            nCell = nRow.createCell(6);
+            nCell.setCellValue(items.get(cnt).getUNIT_NAME());
+            nCell = nRow.createCell(7);
+            nCell.setCellValue(items.get(cnt).getROOM_NAME());
+            nCell = nRow.createCell(8);
+            nCell.setCellValue(items.get(cnt).getJURIS());
+            nCell = nRow.createCell(9);
+            nCell.setCellValue(items.get(cnt).getPOLICE());
+            nCell = nRow.createCell(10);
+            nCell.setCellValue(items.get(cnt).getBUILD_POINT_LAT());
+            nCell = nRow.createCell(11);
+            nCell.setCellValue(items.get(cnt).getBUILD_POINT_LNG());
+            cnt++;
+        }
+        long finishedTime = System.currentTimeMillis(); //处理完成时间
+        System.out.println("finished execute  time: " + (finishedTime - startTime)/1000 + "m");
+
+        FileOutputStream fOut = new FileOutputStream(xlsFile);
+        wb.write(fOut);
+        fOut.flush();
+        fOut.close();
+        long stopTime = System.currentTimeMillis();
+        System.out.println("write xlsx file time: " + (stopTime - startTime)/1000 + "m");
+
+        return "success!";
+    }
     public void fillsheet(Row nRow, Sheet sheet, Cell nCell){
         nRow = sheet.createRow(0);
         // 填充一行数据
@@ -184,6 +249,35 @@ public class mainController {
         nCell.setCellValue("套内面积（房屋）");
         nCell = nRow.createCell(29);
         nCell.setCellValue("分摊面积（房屋）");
+    }
+    public void fillsheet1(Row nRow, Sheet sheet, Cell nCell){
+        nRow = sheet.createRow(0);
+        // 填充一行数据
+        nCell = nRow.createCell(0);
+        nCell.setCellValue("城市名称");
+        nCell = nRow.createCell(1);
+        nCell.setCellValue("所属区域");
+        nCell = nRow.createCell(2);
+        nCell.setCellValue("楼盘名称");
+        nCell = nRow.createCell(3);
+        nCell.setCellValue("楼盘地址");
+        nCell = nRow.createCell(4);
+        nCell.setCellValue("楼栋名称");
+        nCell = nRow.createCell(5);
+        nCell.setCellValue("门牌号");
+        nCell = nRow.createCell(6);
+        nCell.setCellValue("单元");
+        nCell = nRow.createCell(7);
+        nCell.setCellValue("房间");
+        nCell = nRow.createCell(8);
+        nCell.setCellValue("公安管辖");
+        nCell = nRow.createCell(9);
+        nCell.setCellValue("警务人员");
+        nCell = nRow.createCell(10);
+        nCell.setCellValue("经度");
+        nCell = nRow.createCell(11);
+        nCell.setCellValue("纬度");
+
     }
 
 }
